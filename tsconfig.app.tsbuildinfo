@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/modules.ts","./src/components/appsidebar.tsx","./src/components/columneditor.tsx","./src/components/dropzone.tsx","./src/components/leadsscraper.tsx","./src/components/resultstable.tsx","./src/lib/api.ts","./src/lib/export.ts","./src/lib/types.ts"],"version":"5.7.3"}
