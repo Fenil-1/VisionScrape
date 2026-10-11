@@ -1,5 +1,7 @@
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
+import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
 
 // Local dev API middleware — serves POST /api/extract without needing the Vercel CLI.
 // In production (Vercel), api/extract.ts handles the same route.
@@ -33,6 +35,25 @@ function localApiPlugin(): Plugin {
   };
 }
 
+// Starts the local Whisper service (transcribe/server.py) alongside the dev server.
+// Setup once: python3 -m venv transcribe/.venv && transcribe/.venv/bin/pip install -r transcribe/requirements.txt
+function transcribeServerPlugin(): Plugin {
+  return {
+    name: 'transcribe-server',
+    configureServer(server) {
+      const python = 'transcribe/.venv/bin/python';
+      if (!existsSync(python)) {
+        server.config.logger.warn('[transcribe] venv missing — audio transcription disabled (see README)');
+        return;
+      }
+      const child = spawn(python, ['transcribe/server.py'], { stdio: 'inherit' });
+      const stop = () => child.kill();
+      server.httpServer?.on('close', stop);
+      process.on('exit', stop);
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   // Load .env.local / .env into process.env so extract-core can read the API key
   const env = loadEnv(mode, process.cwd(), '');
@@ -41,6 +62,17 @@ export default defineConfig(({ mode }) => {
   if (env.GOOGLE_CLOUD_PROJECT) process.env.GOOGLE_CLOUD_PROJECT = env.GOOGLE_CLOUD_PROJECT;
 
   return {
-    plugins: [react(), localApiPlugin()],
+    plugins: [react(), localApiPlugin(), transcribeServerPlugin()],
+    server: {
+      // Whisper on CPU can take minutes for long recordings — don't time the proxy out
+      proxy: {
+        '/api/transcribe': {
+          target: 'http://127.0.0.1:8787',
+          timeout: 0,
+          proxyTimeout: 0,
+          rewrite: () => '/transcribe',
+        },
+      },
+    },
   };
 });

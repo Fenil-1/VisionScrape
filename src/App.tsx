@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AppSidebar } from './components/AppSidebar';
 import { LeadsScraper } from './components/LeadsScraper';
+import { AudioTranscriber } from './components/AudioTranscriber';
 import { MODULES } from './modules';
 
 const ACTIVE_MODULE_KEY = 'visionscrape-active-module';
@@ -21,6 +22,7 @@ export default function App() {
       <AppSidebar activeId={activeId} onSelect={select} />
       <div className="app-main">
         {activeId === 'leads-scraper' && <LeadsScraper />}
+        {activeId === 'audio-transcription' && <AudioTranscriber />}
         {/* Future modules mount here, keyed by their id from src/modules.ts */}
       </div>
     </div>

@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import { Table2, Contact, BookOpen, ReceiptText } from 'lucide-react';
+import { Table2, Contact, BookOpen, ReceiptText, AudioLines } from 'lucide-react';
 
 export interface ModuleDef {
   id: string;
@@ -17,6 +17,13 @@ export const MODULES: ModuleDef[] = [
     title: 'Leads Scraper',
     subtitle: 'Extract every row from table & list screenshots',
     icon: Table2,
+    available: true,
+  },
+  {
+    id: 'audio-transcription',
+    title: 'Audio Transcription',
+    subtitle: 'English audio (.aac & more) → timestamped text',
+    icon: AudioLines,
     available: true,
   },
   {

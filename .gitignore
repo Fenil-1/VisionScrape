@@ -6,3 +6,5 @@ dist
 .vercel
 .DS_Store
 *.log
+transcribe/.venv
+__pycache__

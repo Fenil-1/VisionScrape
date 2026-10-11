@@ -128,3 +128,19 @@ vite.config.ts               dev server + local /api/extract middleware (no Verc
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+
+## Audio Transcription (local, English)
+
+Upload one or many `.aac` (or m4a/mp3/wav) files and get timestamped transcripts, using
+[faster-whisper](https://github.com/SYSTRAN/faster-whisper) running on your machine. Requires `ffmpeg`.
+
+One-time setup:
+
+```bash
+python3 -m venv transcribe/.venv
+transcribe/.venv/bin/pip install -r transcribe/requirements.txt
+```
+
+Then `npm run dev` starts the web app and the transcription service together. The first start downloads the
+`small.en` model (~460 MB). Use `WHISPER_MODEL=base.en` (faster) or `medium.en` (more accurate) to change it.
